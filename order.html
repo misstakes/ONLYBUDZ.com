@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pre-Order</title>
+  <link rel="stylesheet" href="order.css" />
+</head>
+<body>
+  <div class="order-box">
+    <h2>Place Your Pre-Order</h2>
+    <form id="orderForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required />
+
+      <h3>Select Products & Quantity</h3>
+      <div class="product-list" id="productList">
+        <!-- Each product as a separate tile -->
+
+        <div class="product-tile" data-name="DABURN" data-price="350">
+          <strong>DABURN</strong> (KES 350 / 1g)<br>
+          <input type="number" min="0" placeholder="Grams" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="DABURN ROLLS" data-price="200">
+          <strong>DABURN ROLLS</strong> (KES 200 / Roll)<br>
+          <input type="number" min="0" placeholder="ROLLS" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="SKUNK" data-price="200">
+          <strong>SKUNK</strong> (KES 200 / 1g)<br>
+          <input type="number" min="0" placeholder="Grams" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="SKUNK ROLLS" data-price="100">
+          <strong>SKUNK ROLLS</strong> (KES 100 / Roll)<br>
+          <input type="number" min="0" placeholder="ROLLS" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="HYDRO" data-price="450">
+          <strong>HYDRO</strong> (KES 450 / Gram)<br>
+          <input type="number" min="0" placeholder="Grams" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="HYDRO ROLLS" data-price="250">
+          <strong>HYDRO ROLLS</strong> (KES 250 / Roll)<br>
+          <input type="number" min="0" placeholder="ROLLS" class="qty-input" />
+        </div>
+
+        <div class="product-tile" data-name="EDIBLES" data-price="100">
+          <strong>Edibles</strong> (KES 100 / Unit)<br>
+          <input type="number" min="0" placeholder="Qty" class="qty-input" />
+        </div>
+      </div>
+
+      <textarea id="notes" placeholder="Drop location or note" rows="3" required></textarea>
+
+      <div id="priceDisplay">Total: KES <span id="totalPrice">0</span></div>
+      <button type="submit">Submit Order</button>
+    </form>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll(".product-tile .qty-input");
+    const priceDisplay = document.getElementById("totalPrice");
+
+    function calculateTotal() {
+      let total = 0;
+      inputs.forEach(input => {
+        const qty = parseFloat(input.value) || 0;
+        const price = parseFloat(input.closest(".product-tile").dataset.price);
+        total += qty * price;
+      });
+      priceDisplay.textContent = total.toFixed(2);
+    }
+
+    inputs.forEach(input => {
+      input.addEventListener("input", calculateTotal);
+    });
+
+    document.getElementById("orderForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nameField = document.getElementById("name");
+      const phoneField = document.getElementById("phone");
+      const notesField = document.getElementById("notes");
+
+      const name = encodeURIComponent(nameField.value.trim());
+      const phone = encodeURIComponent(phoneField.value.trim());
+      const notes = encodeURIComponent(notesField.value.trim());
+
+      let totalPrice = 0;
+      let productList = "";
+
+      inputs.forEach(input => {
+        const qty = parseFloat(input.value);
+        if (qty && qty > 0) {
+          const tile = input.closest(".product-tile");
+          const pname = tile.dataset.name;
+          const price = parseFloat(tile.dataset.price);
+          const itemTotal = qty * price;
+          totalPrice += itemTotal;
+          productList += `${pname}: ${qty} @ KES ${price} = KES ${itemTotal}%0A`;
+        }
+      });
+
+      if (!productList) {
+        alert("Please enter quantity for at least one product.");
+        return;
+      }
+
+      const confirmText = `Pay *KES ${totalPrice}* via M-Pesa NO 0701242024\nThen enter your Transaction Code below to confirm.`;
+
+      const mpesaCode = prompt(confirmText + "\n\nTransaction Code (e.g., QFD12345):");
+
+      if (!mpesaCode || mpesaCode.trim().length < 5) {
+        alert("Invalid M-Pesa code. Order not sent.");
+        return;
+      }
+
+      const transactionCode = encodeURIComponent(mpesaCode.trim());
+
+      const message =
+        `*New Weed Pre-Order*%0AName: ${name}%0APhone: ${phone}%0A%0A*Items Ordered:*%0A${productList}%0ATotal: KES ${totalPrice}%0A%0ANote: ${notes}%0A%0A*M-Pesa Code:* ${transactionCode}`;
+
+      const whatsappNumber = "+254701242024";
+      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+      window.open(url, "_blank");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+body {
+    background: radial-gradient(circle, #000000, #111111);
+    color: #00ffcc;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .entry-box {
+    background: #0a0a0a;
+    border: 1px solid #00ffcc;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00ffcc33;
+    text-align: center;
+  }
+  input, button {
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 16px;
+  }
+  input {
+    background: #1a1a1a;
+    color: #00ffcc;
+  }
+  button {
+    background: #00ffcc;
+    color: #000;
+    cursor: pointer;
+  }
+  #error {
+    color: red;
+    display: none;
+    margin-top: 10px;
+  }
+  
