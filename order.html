@@ -14,7 +14,6 @@
 
       <h3>Select Products & Quantity</h3>
       <div class="product-list" id="productList">
-        <!-- Each product as a separate tile -->
 
         <div class="product-tile" data-name="DABURN" data-price="350">
           <strong>DABURN</strong> (KES 350 / 1g)<br>
@@ -80,13 +79,9 @@
     document.getElementById("orderForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const nameField = document.getElementById("name");
-      const phoneField = document.getElementById("phone");
-      const notesField = document.getElementById("notes");
-
-      const name = encodeURIComponent(nameField.value.trim());
-      const phone = encodeURIComponent(phoneField.value.trim());
-      const notes = encodeURIComponent(notesField.value.trim());
+      const name = encodeURIComponent(document.getElementById("name").value.trim());
+      const phone = encodeURIComponent(document.getElementById("phone").value.trim());
+      const notes = encodeURIComponent(document.getElementById("notes").value.trim());
 
       let totalPrice = 0;
       let productList = "";
@@ -108,9 +103,8 @@
         return;
       }
 
-      const confirmText = `Pay *KES ${totalPrice}* via M-Pesa NO 0701242024\nThen enter your Transaction Code below to confirm.`;
-
-      const mpesaCode = prompt(confirmText + "\n\nTransaction Code (e.g., QFD12345):");
+      // Prompt FIRST to keep in user interaction flow
+      const mpesaCode = prompt(`Pay *KES ${totalPrice}* via M-Pesa NO 0701242024\nThen enter your Transaction Code below to confirm.\n\nTransaction Code (e.g., QFD12345):`);
 
       if (!mpesaCode || mpesaCode.trim().length < 5) {
         alert("Invalid M-Pesa code. Order not sent.");
@@ -122,11 +116,18 @@
       const message =
         `*New Weed Pre-Order*%0AName: ${name}%0APhone: ${phone}%0A%0A*Items Ordered:*%0A${productList}%0ATotal: KES ${totalPrice}%0A%0ANote: ${notes}%0A%0A*M-Pesa Code:* ${transactionCode}`;
 
-      const whatsappNumber = "+254701242024";
+      const whatsappNumber = "254701242024";
       const url = `https://wa.me/${whatsappNumber}?text=${message}`;
 
-      window.open(url, "_blank");
-      window.location.href = "index.html";
+      // Trigger redirect while still within the user gesture
+      const newWindow = window.open(url, "_blank");
+
+      if (newWindow) {
+        // Optional: fallback redirect after opening WhatsApp
+        window.location.href = "index.html";
+      } else {
+        alert("Popup blocked! Please allow popups for this site.");
+      }
     });
   </script>
 </body>
