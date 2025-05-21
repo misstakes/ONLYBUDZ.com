@@ -38,7 +38,7 @@ html, body {
   color: #00ff99;
 }
 .order-box h2::before {
-  content: "🛒 ";
+  content: " ";
 }
 .order-box h3 {
   text-align: center;
@@ -129,7 +129,7 @@ button::after {
   color: #00ff99;
 }
 #priceDisplay::before {
-  content: "💰 ";
+  content: " ";
 }
 
 /* Mobile Scroll Fix */
